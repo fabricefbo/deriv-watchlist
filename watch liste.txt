@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #ffffff, #e6e6e6) fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .watchlists-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .watchlist,
+        .watchlist-items {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .watchlist-header,
+        .watchlist-items-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .watchlist-title,
+        .watchlist-items-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .watchlist-controls {
+            display: flex;
+            gap: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .watchlist-items-controls {
+            display: flex;
+            gap: 5px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .watchlist-controls button,
+        .watchlist-items-controls button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .watchlist-controls button {
+            padding: 5px 10px;
+        }
+
+        .watchlist-items-controls button {
+            padding: 3px 6px;
+        }
+
+        .watchlist-section {
+            margin-bottom: 20px;
+        }
+
+        .watchlist-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .watchlist-section select,
+        .watchlist-section input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .importance-select {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .importance-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .importance-option input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .importance-option label {
+            margin: 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .importance-option input[type="radio"]:checked + label {
+            border: 2px solid #000;
+        }
+
+        .importance-option .red {
+            background-color: #ff0000;
+        }
+
+        .importance-option .green {
+            background-color: #00ff00;
+        }
+
+        .importance-option .blue {
+            background-color: #0000ff;
+        }
+
+        .submit-button {
+            text-align: center;
+        }
+
+        .submit-button button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-button button:hover {
+            background-color: #45a049;
+        }
+
+        .item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .importance-dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .remove-button {
+            background: none;
+            border: none;
+            color: red;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+    <title>Watchlist des Indices</title>
+</head>
+
+<body>
+
+    <div class="watchlists-container">
+        <div class="watchlist" id="watchlist">
+            <div class="watchlist-header">
+                <div class="watchlist-title">Liste de surveillance des Indices</div>
+                <div class="watchlist-controls">
+                    <button onclick="toggleWatchlist()">−</button>
+                    <button onclick="closeWatchlist()">×</button>
+                </div>
+            </div>
+
+            <div class="watchlist-content">
+                <div class="watchlist-section">
+                    <label for="indices">Indices :</label>
+                    <select id="indices">
+                        <option value="Volatility10">Volatility10</option>
+                        <option value="Volatility10(1s)">Volatility10(1s)</option>
+                        <option value="Volatility25">Volatility25</option>
+                        <option value="Volatility25(1s)">Volatility25(1s)</option>
+                        <option value="Volatility50">Volatility50</option>
+                        <option value="Volatility50(1s)">Volatility50(1s)</option>
+                        <option value="Volatility75">Volatility75</option>
+                        <option value="Volatility75(1s)">Volatility75(1s)</option>
+                        <option value="Volatility100">Volatility100</option>
+                        <option value="Volatility100(1s)">Volatility100(1s)</option>
+                        <option value="Volatility150(1s)">Volatility150(1s)</option>
+                        <option value="Volatility200(1s)">Volatility200(1s)</option>
+                        <option value="Volatility250(1s)">Volatility250(1s)</option>
+                        <option value="Volatility300(1s)">Volatility300(1s)</option>
+                        <option value="Step index">Step index</option>
+                        <option value="Step index 200">Step index 200</option>
+                        <option value="Step index 500">Step index 500</option>
+                        <option value="Boom300">Boom300</option>
+                        <option value="Boom500">Boom500</option>
+                        <option value="Boom1000">Boom1000</option>
+                        <option value="Crash300">Crash300</option>
+                        <option value="Crash500">Crash500</option>
+                        <option value="Crash1000">Crash1000</option>
+                        <option value="Jump10">Jump10</option>
+                        <option value="Jump25">Jump25</option>
+                        <option value="Jump50">Jump50</option>
+                        <option value="Jump75">Jump75</option>
+                        <option value="Jump100">Jump100</option>
+                        <option value="Range break100">Range break100</option>
+                        <option value="Range break200">Range break200</option>
+                    </select>
+                </div>
+
+                <div class="watchlist-section">
+                    <label for="timeFrame">Time Frame :</label>
+                    <select id="timeFrame">
+                        <option value="1min">1min</option>
+                        <option value="5min">5min</option>
+                        <option value="15min">15min</option>
+                        <option value="30min">30min</option>
+                        <option value="1h">1h</option>
+                        <option value="4h">4h</option>
+                        <option value="1d">1d</option>
+                        <option value="1w">1w</option>
+                        <option value="1mo">1mo</option>
+                    </select>
+                </div>
+
+                <div class="watchlist-section">
+                    <label>Importance :</label>
+                    <div class="importance-select">
+                        <div class="importance-option">
+                            <input type="radio" id="importance-red" name="importance" value="red">
+                            <label for="importance-red" class="red"></label>
+                        </div>
+                        <div class="importance-option">
+                            <input type="radio" id="importance-green" name="importance" value="green">
+                            <label for="importance-green" class="green"></label>
+                        </div>
+                        <div class="importance-option">
+                            <input type="radio" id="importance-blue" name="importance" value="blue">
+                            <label for="importance-blue" class="blue"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-button">
+                    <button onclick="addToWatchlist()">Ajouter à la Watchlist</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="watchlist-items" id="watchlistItems">
+            <div class="watchlist-items-header">
+                <div class="watchlist-items-title">Affichage</div>
+                <div class="watchlist-items-controls">
+                    <button onclick="toggleWatchlistItems()">−</button>
+                    <button onclick="closeWatchlistItems()">×</button>
+                </div>
+            </div>
+
+            <div class="watchlist-items-content">
+                <!-- Liste des éléments ajoutés à la watchlist -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleWatchlist() {
+            var content = document.querySelector('.watchlist-content');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+
+        function closeWatchlist() {
+            document.getElementById('watchlist').style.display = 'none';
+        }
+
+        function toggleWatchlistItems() {
+            var content = document.querySelector('.watchlist-items-content');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+
+        function closeWatchlistItems() {
+            document.getElementById('watchlistItems').style.display = 'none';
+        }
+
+        function addToWatchlist() {
+            var indices = document.getElementById('indices').value;
+            var timeFrame = document.getElementById('timeFrame').value;
+            var importance = document.querySelector('input[name="importance"]:checked').value;
+
+            var watchlistItems = document.querySelector('.watchlist-items-content');
+
+            var itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+
+            var importanceDot = document.createElement('div');
+            importanceDot.className = 'importance-dot';
+            importanceDot.style.backgroundColor = importance;
+
+            var itemContent = document.createElement('span');
+            itemContent.innerHTML = indices + ' <strong>' + timeFrame + '</strong>';
+
+            var removeButton = document.createElement('button');
+            removeButton.className = 'remove-button';
+            removeButton.innerHTML = '×';
+            removeButton.onclick = function () {
+                watchlistItems.removeChild(itemDiv);
+            };
+
+            itemDiv.appendChild(importanceDot);
+            itemDiv.appendChild(itemContent);
+            itemDiv.appendChild(removeButton);
+
+            watchlistItems.appendChild(itemDiv);
+        }
+    </script>
+
+</body>
+
+</html>
+
