@@ -1,2 +1,0 @@
-# deriv-watchlist
-deriv watchlist
