@@ -1,226 +1,383 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matchs en Ligne</title>
     <style>
-        /* Style du site */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #ffffff, #e6e6e6) fixed;
             margin: 0;
             padding: 0;
-        }
-
-        header {
-            background-color: #004d99;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .promo-codes {
-            margin-top: 10px;
-        }
-
-        .promo-code {
-            background-color: #ffffff;
-            color: #004d99;
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 5px 10px;
-            font-weight: bold;
-        }
-
-        main {
-            padding: 20px;
             display: flex;
-            justify-content: center;
             flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .content {
+            flex: 1; /* Permet au contenu principal de prendre tout l'espace disponible */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .watchlists-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .watchlist,
+        .watchlist-items {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .watchlist-header,
+        .watchlist-items-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        #match-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .match-card {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            max-width: 320px;
-            width: 100%;
+        .watchlist-title,
+        .watchlist-items-title {
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-size: 24px;
+            font-weight: bold;
+            flex-grow: 1;
         }
 
-        .match-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        .watchlist-controls {
+            display: none; /* Masquer les contrôles de la watchlist */
         }
 
-        .match-card h2 {
-            margin: 0;
-            font-size: 1.4em;
-            color: #004d99;
+        .watchlist-items-controls {
+            display: none; /* Masquer les contrôles des éléments de la watchlist */
+        }
+
+        .watchlist-section {
+            margin-bottom: 20px;
+        }
+
+        .watchlist-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .watchlist-section select,
+        .watchlist-section input {
+            width: 100%;
+            padding: 10px;
             margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
-        .match-card p {
+        .importance-select {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .importance-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .importance-option input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .importance-option label {
             margin: 0;
-            font-size: 1.1em;
-            color: #666;
-        }
-
-        .match-card a {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #004d99;
-            color: white;
-            text-decoration: none;
+            padding: 5px 10px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            cursor: pointer;
         }
 
-        .match-card a:hover {
-            background-color: #003d80;
+        .importance-option input[type="radio"]:checked+label {
+            border: 2px solid #000;
         }
 
-        footer {
+        .importance-option .red {
+            background-color: #ff0000;
+        }
+
+        .importance-option .green {
+            background-color: #00ff00;
+        }
+
+        .importance-option .blue {
+            background-color: #0000ff;
+        }
+
+        .submit-button {
             text-align: center;
-            padding: 20px;
-            background-color: #004d99;
+        }
+
+        .submit-button button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
             color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-button button:hover {
+            background-color: #45a049;
+        }
+
+        .watchlist-items {
+            min-width: 300px;
+            /* Assurez-vous que la largeur minimale est suffisante */
+        }
+
+        .item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            white-space: nowrap;
+            /* Évitez les retours à la ligne */
+            font-weight: normal;
+            /* Assurez-vous que rien n'est en gras */
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .importance-dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .remove-button {
+            background: none;
+            border: none;
+            color: red;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .item-content {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            /* Assurez-vous que rien n'est en gras */
+        }
+
+        .item-index {
+            margin-right: 10px;
+            /* Espace entre l'indice et le temps */
+            font-weight: normal;
+            /* Assurez-vous que rien n'est en gras */
+        }
+
+        .item-time {
+            font-weight: normal;
+            /* Assurez-vous que rien n'est en gras */
+        }
+
+        .social-container {
+            text-align: center;
             margin-top: 20px;
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .social-icons {
+            display: flex;
+            justify-content: center;
             margin-top: 10px;
         }
 
         .social-icons a {
-            margin: 0 8px;
+            margin: 0 10px;
         }
 
         .social-icons img {
-            width: 28px;
-            height: 28px;
-            transition: transform 0.3s;
-        }
-
-        .social-icons img:hover {
-            transform: scale(1.2);
-        }
-
-        .note {
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: white;
+            width: 30px; /* Taille des icônes sociales réduite */
+            height: 30px; /* Taille des icônes sociales réduite */
         }
 
         .made-by {
-            margin-top: 40px;
-        }
-        
-        /* Titre des matchs */
-        .match-title {
-            font-size: 1.8em;
-            color: #004d99;
-            text-align: center;
+            font-size: 14px; /* Taille du texte réduite pour "Made by Fbo" */
             margin-bottom: 10px;
         }
-
-        .match-info {
-            text-align: center;
-            font-size: 1.1em;
-            color: #004d99;
-            margin-bottom: 5px; /* Réduit l'espace entre les paragraphes */
-        }
     </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+    <title>Watchlist des Indices</title>
 </head>
-<body>
-    <header>
-        <h1>Suivez les Matchs en Ligne</h1>
-        <div class="promo-codes">
-            <div class="promo-code">200% de Bonus avec Code Promo 1xbet: FBO9</div>
-            <div class="promo-code">500% de Bonus avec Code Promo 1win: FBO9</div>
-        </div>
-        <p style="font-size: 0.8em; margin-top: 10px;">Jouez avec modération car les paris sportifs comportent des risques de perte.</p>
-    </header>
-    <main>
-        <!-- Titre des matchs -->
-        <h2 class="match-title">Matchs du 18/10/2024</h2>
 
-        <!-- Liste des matchs -->
-        <div id="match-list">
-            <div class="match-card">
-                <h2>Tottenham 🆚 Westham</h2>
-                <p>11h30</p>
-                <a href="https://t.me/bannousg80?livestream" target="_blank">Suivre le Match</a>
+<body>
+
+    <div class="content">
+        <div class="watchlists-container">
+            <div class="watchlist" id="watchlist">
+                <div class="watchlist-header">
+                    <div class="watchlist-title">Liste de surveillance des Indices</div>
+                </div>
+
+                <div class="watchlist-content">
+                    <div class="watchlist-section">
+                        <label for="indices">Indices :</label>
+                        <select id="indices">
+                            <option value="Volatility10">Volatility10</option>
+                            <option value="Volatility10(1s)">Volatility10(1s)</option>
+                            <option value="Volatility25">Volatility25</option>
+                            <option value="Volatility25(1s)">Volatility25(1s)</option>
+                            <option value="Volatility50">Volatility50</option>
+                            <option value="Volatility50(1s)">Volatility50(1s)</option>
+                            <option value="Volatility75">Volatility75</option>
+                            <option value="Volatility75(1s)">Volatility75(1s)</option>
+                            <option value="Volatility100">Volatility100</option>
+                            <option value="Volatility100(1s)">Volatility100(1s)</option>
+                            <option value="Volatility150(1s)">Volatility150(1s)</option>
+                            <option value="Volatility200(1s)">Volatility200(1s)</option>
+                            <option value="Volatility250(1s)">Volatility250(1s)</option>
+                            <option value="Volatility300(1s)">Volatility300(1s)</option>
+                            <option value="Step index">Step index</option>
+                            <option value="Step index 200">Step index 200</option>
+                            <option value="Step index 500">Step index 500</option>
+                            <option value="Boom300">Boom300</option>
+                            <option value="Boom500">Boom500</option>
+                            <option value="Boom1000">Boom1000</option>
+                            <option value="Crash300">Crash300</option>
+                            <option value="Crash500">Crash500</option>
+                            <option value="Crash1000">Crash1000</option>
+                            <option value="Jump10">Jump10</option>
+                            <option value="Jump25">Jump25</option>
+                            <option value="Jump50">Jump50</option>
+                            <option value="Jump75">Jump75</option>
+                            <option value="Jump100">Jump100</option>
+                            <option value="Range break100">Range break100</option>
+                            <option value="Range break200">Range break200</option>
+                        </select>
+                    </div>
+
+                    <div class="watchlist-section">
+                        <label for="timeFrame">Unité de temps :</label>
+                        <select id="timeFrame">
+                            <option value="1min">1min</option>
+                            <option value="5min">5min</option>
+                            <option value="15min">15min</option>
+                            <option value="30min">30min</option>
+                            <option value="1h">1h</option>
+                            <option value="4h">4h</option>
+                            <option value="1day">1day</option>
+                        </select>
+                    </div>
+
+                    <div class="watchlist-section">
+                        <label>Importance :</label>
+                        <div class="importance-select">
+                            <div class="importance-option">
+                                <input type="radio" id="importance-red" name="importance" value="red">
+                                <label for="importance-red" class="red"></label>
+                            </div>
+                            <div class="importance-option">
+                                <input type="radio" id="importance-green" name="importance" value="green">
+                                <label for="importance-green" class="green"></label>
+                            </div>
+                            <div class="importance-option">
+                                <input type="radio" id="importance-blue" name="importance" value="blue">
+                                <label for="importance-blue" class="blue"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="submit-button">
+                        <button onclick="addToWatchlist()">Ajouter à la Watchlist</button>
+                    </div>
+                </div>
             </div>
-            <div class="match-card">
-                <h2>Man Utd 🆚 Brentford</h2>
-                <p>14h00</p>
-                <a href="https://t.me/bannousg81?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>Bournemouth 🆚 Arsenal</h2>
-                <p>16h30</p>
-                <a href="https://t.me/ikzlivve403?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>Saint-Etienne 🆚 Lens</h2>
-                <p>17h00</p>
-                <a href="https://t.me/bannousg82?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>PSG 🆚 Strasbourg</h2>
-                <p>19h00</p>
-                <a href="https://t.me/bannousg82?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>Bayern Munich 🆚 Stuttgart</h2>
-                <p>16h30</p>
-                <a href="https://t.me/bannousg83?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>Celta Vigo 🆚 Real Madrid</h2>
-                <p>19h00</p>
-                <a href="https://t.me/bannousg83?livestream" target="_blank">Suivre le Match</a>
-            </div>
-            <div class="match-card">
-                <h2>Francis Ngannou 🆚 Ferreira</h2>
-                <p>PFL</p>
-                <a href="https://t.me/bannousg125?livestream" target="_blank">Suivre le Combat</a>
+
+            <div class="watchlist-items" id="watchlistItems">
+                <div class="watchlist-items-header">
+                    <div class="watchlist-items-title">Affichage</div>
+                </div>
+
+                <div class="watchlist-items-content">
+                    <!-- Liste des éléments ajoutés à la watchlist -->
+                </div>
             </div>
         </div>
-    </main>
-    <footer>
-        <div class="note">
-            <p>Les heures indiquées sont en GMT. Les matchs sont diffusés sur Telegram.</p>
-            <p>Parfois, le son ne sort pas des fois sur les téléphones portables mais fonctionne correctement sur l'ordinateur.</p>
-            <p>Les liens sont renouvelés tous les jours. Une bonne connexion internet est nécessaire pour un visionnage optimal.</p>
-        </div>
-        <div class="made-by">Réalisé par Fbo</div>
+    </div>
+
+    <div class="social-container">
+        <div class="made-by">Made by Fbo</div>
         <div class="social-icons">
             <a href="https://www.instagram.com/fbo_le_sheild/" target="_blank" title="Instagram">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
             </a>
-            <a href="https://t.me/+nihcpKqkTVg4NmNk" target="_blank" title="Telegram">
+            <a href="https://t.me/+QjKCePDXU9o0MDA0" target="_blank" title="Groupe Telegram">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Groupe Telegram">
+            </a>
+            <a href="https://t.me/fabricefbo" target="_blank" title="Telegram">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
             </a>
         </div>
-    </footer>
+    </div>
+
+    <script>
+        function addToWatchlist() {
+            var indices = document.getElementById('indices').value;
+            var timeFrame = document.getElementById('timeFrame').value;
+            var importance = document.querySelector('input[name="importance"]:checked').value;
+
+            var watchlistItems = document.querySelector('.watchlist-items-content');
+
+            var itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+
+            var importanceDot = document.createElement('div');
+            importanceDot.className = 'importance-dot';
+            importanceDot.style.backgroundColor = importance;
+
+            var itemContent = document.createElement('span');
+            itemContent.className = 'item-content';
+
+            var itemIndex = document.createElement('span');
+            itemIndex.className = 'item-index';
+            itemIndex.innerText = indices + ' ';
+
+            var itemTime = document.createElement('span');
+            itemTime.className = 'item-time';
+            itemTime.innerText = timeFrame;
+
+            var removeButton = document.createElement('button');
+            removeButton.className = 'remove-button';
+            removeButton.innerHTML = '×';
+            removeButton.onclick = function () {
+                watchlistItems.removeChild(itemDiv);
+            };
+
+            itemContent.appendChild(itemIndex);
+            itemContent.appendChild(itemTime);
+            itemDiv.appendChild(importanceDot);
+            itemDiv.appendChild(itemContent);
+            itemDiv.appendChild(removeButton);
+
+            watchlistItems.appendChild(itemDiv);
+        }
+    </script>
+
 </body>
+
 </html>
+
